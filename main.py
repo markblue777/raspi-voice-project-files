@@ -155,10 +155,10 @@ def main():
         sample_rate_hz=speech.AUDIO_SAMPLE_RATE_HZ)
 
     with recorder:
-        do_recognition(args, recorder, recognizer, player)
+        do_recognition(args, recorder, recognizer, player, credentials)
 
 
-def do_recognition(args, recorder, recognizer, player):
+def do_recognition(args, recorder, recognizer, player, credentials):
     """Configure and run the recognizer."""
     #this is the text to speech object
     say = tts.create_say(player)
@@ -179,11 +179,10 @@ def do_recognition(args, recorder, recognizer, player):
         import triggers.clap
         triggerer = triggers.clap.ClapTrigger(recorder)
         msg = 'Clap your hands'
-    elif args.trigger == 'speech':
-        import triggers.speech
-        triggerer = triggers.speech.SpeechTrigger(recorder, 'box',
-                                                  speech.AUDIO_SAMPLE_RATE_HZ, speech.AUDIO_SAMPLE_SIZE)
-        msg = 'Say - Box'
+    elif args.trigger == 'hotword':
+        import triggers.hotword
+        triggerer = triggers.hotword.HotwordTrigger(credentials)
+        msg = 'Say "Ok Google"'
     else:
         logger.error("Unknown trigger '%s'", args.trigger)
         return
@@ -306,3 +305,11 @@ class SyncMicRecognizer(object):
 
 if __name__ == '__main__':
     main()
+
+'''
+    elif args.trigger == 'speech':
+        import triggers.speech
+        triggerer = triggers.speech.SpeechTrigger(recorder, 'box',
+                                                  speech.AUDIO_SAMPLE_RATE_HZ, speech.AUDIO_SAMPLE_SIZE)
+        msg = 'Say - Box'
+'''

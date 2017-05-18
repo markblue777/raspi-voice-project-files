@@ -20,6 +20,7 @@ import subprocess
 import feedparser
 
 import actionbase
+import actions.ReadRssFeed as ReadRssFeed
 
 # =============================================================================
 #
@@ -198,36 +199,6 @@ class RepeatAfterMe(object):
 # =========================================
 # Makers! Implement your own actions here.
 # =========================================
-class ReadFeed(object):
-    # get top 10 news feed from bbc website
-    #http://feeds.bbci.co.uk/news/rss.xml?edition=uk#
-	
-    def __init__(self, say, url, feedCount):
-        self.say = say
-        self.rssFeedUrl = url
-        self.feedCount = feedCount
-		
-    def run(self, voice_command):
-        res = self.getNewsFeed()
-
-        if res == "":
-            self.say('Cannot get the news')
-        
-        for item in res:
-            self.say(item.title_detail.value)
-		
-    def getNewsFeed(self):
-        res = feedparser.parse(self.rssFeedUrl)
-
-        if len(res.entries) == 0:
-            return ""
-
-        resultList = []
-
-        for x in range(0,self.feedCount):
-            resultList.append(res.entries[x])
-
-        return resultList
 
 def make_actor(say):
     """Create an actor to carry out the user's commands."""
@@ -250,8 +221,8 @@ def make_actor(say):
     # Makers! Add your own voice commands here.
     # =========================================
     actor.add_keyword(_('who is your master'), SpeakAction(say, 'Mark, is my master'))
-    actor.add_keyword(_('the news'), ReadFeed(say, "http://feeds.bbci.co.uk/news/rss.xml?edition=uk#", 10))
-    
+    actor.add_keyword(_('the news'), ReadRssFeed(say, "http://feeds.bbci.co.uk/news/rss.xml?edition=uk#", 10.['title']))
+
     return actor
 
 
